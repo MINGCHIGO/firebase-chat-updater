@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Firebase Chat</title>
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/fife/AAbDypBUPtq8vurJQIDm_5zfXxIN_dPD_CQ9ImKDRn4-bJtK4KbEhReAvxcsQ7zMGeKW_SU9DgNWAODxGzVjKCFsmuKm0eujaRHVdseSE8r3f7YaK_00tmvjH8Gkk440lFYT50Ft98ZU_0nA6lnrCpzRAq-pCItKF4Hwy46LdEEVsO7nXSc8Hm1AAuAfmum4FBUTbVfBq385bwTOHsqel2st251Z2EY2ZXckSIlEejVwV6EhNpQdyJQbbM1OEtDppYhL_x-1uTZb_EE229pbmRoBicklBm6mS7H3Uo6phCSco3G501TpS_Dllt7qhgkCVdJbkyIwlLyfpzLb2hUkBSqGZfBI24B8tKqmYe_Idbqpjuvx6ZtXmKDp7kYq6z-iec_Vz2VSJ15rUgPK-1ZJg-vLHvoXYS8XPci7JazMwpapiX71f91nGBAsT9Tuq1RQB4wM-omw9XE2ImmiY_MFE4LOSAT1_ZXH4d6KOUZ5wHZQVdqYM2k5U6S1jPNMQ7Jz7OEXBRyyKQEX__fMa2i-wtBgXwFrdQfkDmtqhG8koEI-kyEW8AQ5IZK8o1e5pfHmKcwMipwdvwKpW9UbkxEfeYf5XHNjYZGBMzlikczKqtMOM8IvNvzrduZoDb0Ev1XyuQN3Fr12qbhMdv_LSy9YGCmt3chZMOZH2N0GNuoNqIkFskH6a9r2dXPJzkc27xFYNSyMJ4OgcCPIRfMsgVA93u13qWRr-G_gIOwCp9jtKHyfA3053oIjOkx4WXo13NZeP-AuMN0rAMbGim6ke6VLj2MNaKZ2Qq0P6SxN6cpn1VsefcnEO2xpQ5WWOtJNjYh0os-6hpzpxRPBDwa-xUB5ujK-99O5hhzaKMbblTcWn6km0rq2ZfBwPC0cVrMuAjDW9NWWqwxubkfDSrcrnLG9TPa3rbavvSfSPcpiJhkLtK8ouakTLDUAjIYplbRhzQ7x-g3y2rTjz1iqpzxlh8zqAjd6UfuvffDW_f_YMbkgEDX9ADivfh21sjio62f5GhT5GDZQMlYtjJjjVR_D41wPWCSJSj_8kSQyhyCzj39AhJib-BXhpYqtJvvVbopoJiiCyE7MGISzALf4gCWsdwI-Ssid2LEyaY-gKyhO-5B3dR4oIEZmjUACEfxfyqEydxbBpiLUR6h_n-6zVtgwxdc__9VukiN45720M1k-Jtveh-uPny8AyULDsevfMrLZCp6EOzq3IbLehAA650j6JL4QcON6c97nSucCOkG985gud38br9hYy7ssrDKmKBe3-d-89SfPLFoC94GhPE-mXri7DiOKZgB3bhU_Ev8SqlS0Uyg5rLz3qunVa9nBLxm1Y0EapqdrzMTp1ueclysPRRASs6utjPMyR-UXlWmlsLegGlIpjE8Vq5HlgXFsr5ACN-wmc3uCXmsqQC934M5njkFBAAcQm_hxPl9M7-r45XIbmrqEQkE6hnV8aGiEr9xEiM0Oe5raeFW9WrqiGl0R2-YxZ0zueExo_FGt38aBuBX4A7veskdQhcVXqQ8-H0yxDjVoECL8Kxs00Gf9YmWGVOK_FFx8bIXR_69kij0=w2000-h1234">
+    <style>
+      :root {
+        --accent: #ff1b2d;
+      }
+
+      body {
+        background-color: #222222;
+      }
+
+      * {
+        font-family: Verdana;
+        color: white;
+      }
+
+      #chats {
+        overflow: auto;
+        white-space: nowrap;
+        width: 100%;
+        position: fixed;
+        top: 0;
+        background-color: #222222;
+        padding-bottom: 10px;
+        border-bottom: var(--accent) 2px solid;
+        border-left: var(--accent) 2px solid;
+        margin-left: 33px;
+        padding-top: 10px;
+        z-index: 10;
+      }
+
+      button,
+      input {
+        background-color: #171717;
+        border: var(--accent) 2px solid;
+        padding: 10px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-radius: 10px;
+      }
+
+      input {
+        width: 70%;
+      }
+
+      #chats .groupChat {
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        background-color: #444444;
+        display: inline-block;
+        text-decoration: none;
+        font-size: 10px;
+        text-align: center;
+        margin-left: 10px;
+      }
+
+      #chats img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50px;
+        overflow: hidden;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 10px;
+        border: white 2px solid;
+        object-fit: cover;
+      }
+
+      .bottomBar {
+        position: fixed;
+        bottom: 0;
+        background-color: black;
+        width: 100%;
+        margin-left: 35px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: var(--accent) 2px solid;
+      }
+
+      #sideBar {
+        width: 40px;
+        height: 100vh;
+        border-right: var(--accent) 2px solid;
+        border-bottom: var(--accent) 2px solid;
+        position: fixed;
+        background-color: black;
+        top: 0;
+        left: 0;
+        z-index: 999;
+        transition-duration: 0.1s;
+      }
+
+      .spacer {
+        height: 60px;
+        width: 100%;
+      }
+
+      #messages {
+        margin-top: 130px;
+        margin-left: 40px;
+        overflow: break-word;
+        z-index: -100;
+      }
+
+      .message {
+        margin: 5px 0;
+				overflow: wrap;
+				word-wrap: break-word;
+				width: 75vw;
+				margin-left: 35px;
+      }
+
+      .pfpImage {
+        width: 30px;
+        height: 30px;
+        border-radius: 30px;
+        overflow: hidden;
+        display: inline;
+        object-fit: cover;
+        margin-right: 5px;
+        margin-bottom: -15px;
+      }
+
+      .sideBarImg {
+        width: 30px;
+        height: 30px;
+        border-radius: 30px;
+        overflow: hidden;
+        display: inline;
+        object-fit: cover;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-bottom: -5px;
+        margin-top: 5px;
+        transition-duration: 0.3s;
+      }
+
+      #sideBarImg {
+        padding-bottom: 10px;
+        border-bottom: var(--accent) 2px solid;
+        transition-duration: 0.3s;
+      }
+
+      #sideBarSettings {
+        padding-bottom: 5px;
+        border-bottom: var(--accent) 2px solid;
+        transition-duration: 0.3s;
+      }
+
+      #loginScreen {
+        padding-top: 30px;
+        background-color: #222222;
+        width: 100%;
+      }
+
+      .titleBarImg {
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        margin-bottom: -5px;
+        border: white 2px solid;
+      }
+
+      #loginScreen input {
+        margin-bottom: 5px;
+      }
+
+      #settings {
+        width: 100vw;
+        padding: 10px;
+        height: 100%;
+        transition-duration: 0.3s;
+        overflow: scroll;
+				z-index: 100
+      }
+
+      #messageNameViewer {
+        position: fixed;
+        height: 30px;
+        left: 40px;
+        top: 120px;
+        padding-left: 10px;
+        border-bottom: var(--accent) 2px solid;
+        font-size: 20px;
+        width: 100%;
+        background-color: black;
+        text-align: vertical;
+      }
+
+      #loginShrink {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+        width: 300px;
+        background-color: #111111;
+        padding: 20px;
+        border-radius: 10px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div id="sideBar">
+      <div id="sideBarIcons">
+        <div id="sideBarImg">
+
+        </div>
+      </div>
+      <div id="sideBarSettings">
+        <div id="settingsIcon" onclick="settings()">
+          <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AFDK6gO55c7JUfgBBPNG76zv747UV8G6gQ2EH9EFJoLJa0DMkhuPAsvo1DRofhsipomfsEYKSR2-gzL4WoinpyZCfmXTz_3iVQ=w2224-h1466" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px;">
+        </div>
+      </div>
+			<div id="settingsContainer">
+      <div id="settings">
+        Settings:
+        <br>
+        <br>
+        Change your profile picture:
+        <br>
+        <input type="url" placeholder="Paste a link for your profile picture!" id="pfpInput">
+        <br>
+        <button type="button" onclick="savePfp()">
+          Save
+        </button>
+        <div id="pfpMessage">
+
+        </div>
+        <br>
+        <br>
+        Change your password:
+        <br>
+        <input type="text" placeholder="Write your new password here!" id="pwdInput">
+        <br>
+        <button type="button" onclick="savePwd()">
+          Save
+        </button>
+        <div id="pwdMessage">
+
+        </div>
+        <br>
+        <br>
+        Create a group chat:
+        <br>
+        <input type="text" placeholder="Write the name for the group chat!" id="gcNameInput">
+        <br>
+        <input type="url" placeholder="Paste a link for the group picture!" id="gcPfpInput">
+        <br>
+        <button type="button" onclick="newChat(document.getElementById('gcNameInput').value,document.getElementById('gcPfpInput').value,[username])">
+          Create a new Chat
+        </button>
+        <div id="gcMessage">
+
+        </div>
+        <br>
+        <br>
+        <div id="inviteGc">
+          Invite users to your group chat (Note: Make sure you have selected a group chat first):
+          <br>
+          <input type="text" placeholder="Write a user's name here!" id="inviteInput">
+          <br>
+          <button type="button" onclick="inviteUser()">
+            Invite
+          </button>
+          <div id="inviteMessage">
+
+          </div>
+
+        </div>
+        <br>
+        <br>
+        <div id="gcPfp">
+          Change your group chat's picture (Note: you must select a group chat first):
+          <br>
+          <input type="text" placeholder="Paste an image link here!" id="gcPfp2Input">
+          <br>
+          <button type="button" onclick="gcPfp()">
+            Change
+          </button>
+          <div id="gcPfpMessage">
+
+          </div>
+
+        </div>
+        <br>
+        <br>
+        <button type="button" onclick="logout()">
+          Log out
+        </button>
+      </div>
+    </div>
+			</div>
+    <center>
+      <div id='loginScreen'>
+        <div id='loginShrink'>
+          <input type="text" placeholder="Username" id="loginUser">
+          <br>
+          <input type="password" placeholder="Password" id="loginPwd">
+          <br>
+          <button type="button" onclick='login(document.getElementById("loginUser").value,document.getElementById("loginPwd").value)' id="loginButton">
+            Log in
+          </button>
+          <br>
+          <p id="signUpMessage">
+            Don't have an account yet? <a style="color: var(--accent)" onclick="showSignUp()">Click here to sign up!</a>
+          </p>
+					<div id="loginError">
+					
+					</div>
+        </div>
+      </div>
+    </center>
+    <div id="chats">
+    </div>
+    <div id="messageNameViewer"></div>
+    <div class="bottomBar" id="messageBar">
+      <center>
+        <input type="text" autocomplete="off" id="chatbox" placeholder="Type your message here!">
+        <button type="button" onclick="sendMsgFromInput()">Send</button>
+      </center>
+    </div>
+    <div id="messages">
+      <div class="spacer" id="bottomSpacer"></div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase.js"></script>
+    <script>
+      //init firebase
+      var firebaseConfig = {
+        apiKey: "AIzaSyDJj-Jogo6ZGNWS16-adN3l9DTZtdSmzes",
+        authDomain: "chat-3c13c.firebaseapp.com",
+        databaseURL: "https://chat-3c13c-default-rtdb.firebaseio.com/",
+        projectId: "chat-3c13c",
+        storageBucket: "chat-3c13c.appspot.com",
+        messagingSenderId: "973921061932",
+        appId: "1:973921061932:web:c57c0c84f74c00cf4d5589",
+        measurementId: "G-HT9CZVSVXW"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      //init vars
+      var database = firebase.database();
+			var markdownSymbols = ["b","i","u","link","img","strike","sub","sup","h1","h2","h3","h4","h5","h6"];
+			var markdownResults = ["b","i","u",""]
+      var users = [];
+      var chats = [];
+      var viewedChat = "";
+      var viewedMessages = [];
+      var username = "";
+      var roleColor;
+      var role;
+      var obj;
+      var viewedUsers;
+      var profilePicture;
+      var passwords = [];
+      var roleColors = [];
+      var roles = [];
+      var pfps = [];
+      var settingsToggled = false;
+      var messageBar = document.getElementById("messageBar");
+      var loginScreen = document.getElementById("loginScreen");
+      var prevMessages;
+      //init db refs
+      database.ref().child('users').on('child_added', data => {
+        users.push(data.val().username);
+        passwords.push(data.val().password);
+        roleColors.push(data.val().roleColor);
+        roles.push(data.val().role);
+        pfps.push(data.val().profilePicture);
+      });
+      //init funcs
+      messageBar.style.visibility = "hidden";
+      document.getElementById("chats").style.visibility = "hidden";
+      document.getElementById("settings").style.display = "none";
+      document.getElementById("sideBar").style.display = "none";
+      document.getElementById("messageNameViewer").style.display = "none";
+			document.getElementById("messages").style.display = "none";
+
+			function markdown(str) {
+				for (i=0;i<markdownSymbols.length;i++) {
+					while (str.includes("*" + markdownSymbols[i] + "*")) {
+					str = str.replace("*" + markdownSymbols[i] + "*", "<" + markdownSymbols[i] + ">");
+					}
+				}
+					return str;
+			}
+      function settings() {
+        var sideBarIcons = document.getElementById("sideBarIcons");
+        var sideBar = document.getElementById("sideBar");
+        var sideBarSettings = document.getElementById("sideBarSettings");
+        if (settingsToggled) {
+          sideBar.style.position = "fixed";
+					sideBar.style.height = "100vh";
+          sideBar.style.width = "40px";
+          sideBarIcons.style.display = "block";
+          document.getElementById("settings").style.display = "none";
+          settingsToggled = false;
+        } else {
+          sideBar.style.position = "fixed";
+          sideBar.style.height = "150vh";
+					document.getElementById("settings").scrollIntoView();
+          settingsToggled = true;
+          sideBar.style.width = "100vw";
+          sideBarIcons.style.display = "none";
+          document.getElementById("settings").style.display = "block";
+        }
+      }
+
+      function showSignUp() {
+        var loginButton = document.getElementById("loginButton");
+        loginButton.setAttribute("onClick", "signUp(document.getElementById('loginUser').value,document.getElementById('loginPwd').value, '')");
+        loginButton.innerText = "Sign up";
+        document.getElementById("signUpMessage").style.display = "none";
+      }
+
+      function login(user, password) {
+				var loginMessage = document.getElementById("loginError");
+        var indexOfUsername = users.indexOf(user);
+        if (users.includes(user)) {
+          if (passwords[indexOfUsername] == password) {
+            username = user;
+            roleColor = roleColors[indexOfUsername];
+            role = roles[indexOfUsername];
+            profilePicture = pfps[indexOfUsername];
+            document.getElementById("chats").style.visibility = "visible";
+            loginScreen.style.display = "none";
+            document.getElementById("sideBar").style.display = "block";
+						document.getElementById("messages").style.display = "";
+            window.localStorage.setItem("username", username);
+            window.localStorage.setItem("password", password);
+          } else {
+						loginMessage.innerHTML = "Password incorrect!";
+					}
+        } else {
+					loginMessage.innerHTML = "User not found!";
+				}
+      }
+
+      function signUp(user, password, picture) {
+        if (!(users.includes(user))) {
+          database.ref("users/" + user).set({
+            username: user,
+            password: password,
+            role: "User",
+            roleColor: "#ffffff",
+            profilePicture: picture
+          });
+          location.reload();
+        }
+      }
+
+      function newChat(name, picture, users) {
+        if (!(chats.includes(name))) {
+          database.ref("chats/" + name).set({
+            name: name,
+            picture: picture,
+            users: users,
+          });
+          obj = '{"messages":["<b>Start of Chat</b>"]}';
+          obj = JSON.parse(obj);
+          database.ref("messages/" + name).set(obj);
+        }
+        document.getElementById("gcMessage").innerHTML = "Chat created successfully!";
+      }
+
+      function logout() {
+        window.localStorage.setItem("username", "");
+        window.localStorage.setItem("password", "");
+        location.reload();
+      }
+
+      function viewChat(messages) {
+        document.getElementById("messageNameViewer").style.display = "block";
+        viewedChat = messages;
+        messageBar.style.visibility = "visible";
+        checkMessages();
+				document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>"
+        database.ref("chats/" + viewedChat).get().then((data) => {
+          document.getElementById("messageNameViewer").innerHTML = "<img src='" + data.val().picture + "' class='pfpImage titleBarImg'> " + messages;
+					setTimeout(() => {
+					document.getElementById("bottomSpacer").scrollIntoView();
+					},500);
+        })
+      }
+
+      function showMessages(data) {
+        document.getElementById("messages").innerHTML = "";
+        for (i = 0; i < data.length; i++) {
+          document.getElementById("messages").innerHTML += "<div class='message'>" + data[i] + "</div>";
+        }
+      }
+
+      function sendMessage(message) {
+        var m = message;
+        viewedMessages.push(m);
+        database.ref("messages/" + viewedChat + "/messages").child(viewedMessages.length - 1).set(m);
+				database.ref("messages/" + viewedChat).child("lastMessage").set(m);
+      }
+
+      function sendMsgFromInput() {
+        var inputVal = document.getElementById("chatbox").value;
+        inputVal = inputVal.replace(/</g, "&lt;");
+        inputVal = inputVal.replace(/>/g, "&gt;");
+        var html;
+        if (document.getElementById("messages").lastChild.previousSibling.innerHTML.includes("f109283hr" + username)) {
+          html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span>";
+        } else {
+          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><span> " + username + ":</span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
+        }
+        if (inputVal != "") {
+          document.getElementById("messages").innerHTML += html;
+					sendMessage(html);
+					document.getElementById("bottomSpacer").scrollIntoView();
+          document.getElementById("chatbox").value = "";
+        }
+      }
+
+      function savePfp() {
+        var pfp = document.getElementById("pfpInput").value;
+        database.ref("users/" + username + "/profilePicture").set(pfp);
+        document.getElementById("pfpInput").value = "";
+        document.getElementById("pfpMessage").innerHTML = "Completed! Reload to see changes.";
+
+      }
+
+      function savePwd() {
+        var pwd = document.getElementById("pwdInput").value;
+        database.ref("users/" + username + "/password").set(pwd);
+        document.getElementById("pwdInput").value = "";
+        document.getElementById("pwdMessage").innerHTML = "Completed!";
+
+      }
+
+      function inviteUser() {
+        if (viewedChat != "") {
+          var user = document.getElementById("inviteInput").value;
+          viewedUsers.push(user);
+          database.ref("chats/" + viewedChat + "/users").set(viewedUsers);
+          document.getElementById("inviteInput").value = "";
+          document.getElementById("inviteMessage").innerHTML = user + " has been invited to " + viewedChat + "!";
+        } else {
+          document.getElementById("inviteMessage").innerHTML = "You must select a group chat first!";
+        }
+      }
+
+      function gcPfp() {
+        if (viewedChat != "") {
+          var pfp = document.getElementById("gcPfp2Input").value;
+          database.ref("chats/" + viewedChat + "/picture").set(pfp);
+          document.getElementById("gcPfp2Input").value = "";
+          document.getElementById("gcPfpMessage").innerHTML = 'The picture of the group chat has changed!';
+        } else {
+          document.getElementById("gcPfpMessage").innerHTML = "You must select a group chat first!";
+        }
+      }
+
+      function checkMessages() {
+        database.ref('messages/' + viewedChat + "/messages").on('value', (data) => {
+          viewedMessages = data.val();
+          showMessages(viewedMessages);
+					document.getElementById("messages").innerHTML += '<div class="spacer" id="bottomSpacer"></div>';
+        });
+      }
+
+      function checkChats() {
+        viewedUsers = [];
+        document.getElementById("sideBarImg").innerHTML = "<img src='" + profilePicture + "' class='sideBarImg'>";
+        document.getElementById("chats").innerHTML = "";
+        database.ref('chats').on('child_added', data => {
+          if (data.val().users.includes(username)) {
+            chats.push(data.val().name);
+            document.getElementById("chats").innerHTML += "<div class='groupChat gcchate' onclick='viewChat(\"" + data.val().name + "\")'><img src='" + data.val().picture + "'><a class='groupChatName'>" + data.val().name + "</a></div>";
+          }
+        });
+        if (document.getElementById("chats").innerHTML == "") {
+					document.getElementById("messages").innerHTML = "";
+          document.getElementById("chats").innerHTML = document.getElementById("chats").innerHTML + "<div class='groupChat'><a class='groupChatName'>You are not in any chats.</a></div>";
+        }
+        database.ref().child('chats/' + viewedChat + "/users").on('child_added', data => {
+          viewedUsers.push(data.val());
+        });
+      }
+
+      function loginFromCookie() {
+        if (window.localStorage.getItem("username") != undefined && username == "") {
+          login(window.localStorage.getItem("username"), window.localStorage.getItem("password"));
+        }
+      }
+			var dbGet;
+      dbGet = database.ref('messages/' + viewedChat + "/lastMessage");
+			
+			dbGet.on('value', (data) => {
+			  viewedMessages.push(data.val());
+        document.getElementById("messages").innerHTML += "<div class='message'>" + data.val() + "</div>";
+				document.getElementById("bottomSpacer").remove();
+				document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>";
+				document.getElementById("bottomSpacer").scrollIntoView();
+      });
+
+      setInterval(checkChats, 500);
+      setInterval(loginFromCookie, 500);
+      document.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          if (username == "") {
+            document.getElementById("loginButton").click();
+          } else {
+            sendMsgFromInput();
+          }
+        }
+      });
+
+    </script>
+  </body>
+
+</html>
