@@ -171,7 +171,7 @@
         margin-bottom: 5px;
       }
 
-      #settings {
+      .settings {
         width: 100vw;
         padding: 10px;
         height: 100%;
@@ -220,35 +220,14 @@
         <div id="settingsIcon" onclick="settings()">
           <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AFDK6gO55c7JUfgBBPNG76zv747UV8G6gQ2EH9EFJoLJa0DMkhuPAsvo1DRofhsipomfsEYKSR2-gzL4WoinpyZCfmXTz_3iVQ=w2224-h1466" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px;">
         </div>
+        <div id="gcIcon" onclick="gcSettings()">
+          <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AFDK6gO55c7JUfgBBPNG76zv747UV8G6gQ2EH9EFJoLJa0DMkhuPAsvo1DRofhsipomfsEYKSR2-gzL4WoinpyZCfmXTz_3iVQ=w2224-h1466" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px;">
+        </div>
       </div>
 			<div id="settingsContainer">
-      <div id="settings">
-        Settings:
-        <br>
-        <br>
-        Change your profile picture:
-        <br>
-        <input type="url" placeholder="Paste a link for your profile picture!" id="pfpInput">
-        <br>
-        <button type="button" onclick="savePfp()">
-          Save
-        </button>
-        <div id="pfpMessage">
-
-        </div>
-        <br>
-        <br>
-        Change your password:
-        <br>
-        <input type="text" placeholder="Write your new password here!" id="pwdInput">
-        <br>
-        <button type="button" onclick="savePwd()">
-          Save
-        </button>
-        <div id="pwdMessage">
-
-        </div>
-        <br>
+			<div id="gcSettings" class="settings">
+				Group Chat Actions:
+				<br>
         <br>
         Create a group chat:
         <br>
@@ -290,6 +269,33 @@
           <div id="gcPfpMessage">
 
           </div>
+
+        </div>
+			</div>
+      <div id="settings" class="settings">
+        Settings:
+        <br>
+        <br>
+        Change your profile picture:
+        <br>
+        <input type="url" placeholder="Paste a link for your profile picture!" id="pfpInput">
+        <br>
+        <button type="button" onclick="savePfp()">
+          Save
+        </button>
+        <div id="pfpMessage">
+
+        </div>
+        <br>
+        <br>
+        Change your password:
+        <br>
+        <input type="text" placeholder="Write your new password here!" id="pwdInput">
+        <br>
+        <button type="button" onclick="savePwd()">
+          Save
+        </button>
+        <div id="pwdMessage">
 
         </div>
         <br>
@@ -349,8 +355,8 @@
       firebase.initializeApp(firebaseConfig);
       //init vars
       var database = firebase.database();
-			var markdownSymbols = ["b","i","u","link","img","strike","sub","sup","h1","h2","h3","h4","h5","h6"];
-			var markdownResults = ["b","i","u",""]
+			var markdownSymbols = ["b","i","u","link","img","strike","sub","sup","h1","h2","h3","h4","h5","h6","/b","/i","/u","/link","/img","/strike","/sub","/sup","/h1","/h2","/h3","/h4","/h5","/h6","br","quote","/quote","code","/code"];
+			var markdownResults = ["<b>","<i>","<u>","<a href='","<img src='","<s>","<sub>","<sup>","<h1>","<h2>","<h3>","<h4>","<h5>","<h6>","</b>","</i>","</u>","'>Link</a>","'>","</s>","</sub>","</sup>","</h1>","</h2>","</h3>","</h4>","</h5>","</h6>","<br>","<blockquote>","</blockquote>","<code>","</code>"];
       var users = [];
       var chats = [];
       var viewedChat = "";
@@ -366,6 +372,7 @@
       var roles = [];
       var pfps = [];
       var settingsToggled = false;
+			var gcSettingsToggled = false;
       var messageBar = document.getElementById("messageBar");
       var loginScreen = document.getElementById("loginScreen");
       var prevMessages;
@@ -383,20 +390,24 @@
       document.getElementById("settings").style.display = "none";
       document.getElementById("sideBar").style.display = "none";
       document.getElementById("messageNameViewer").style.display = "none";
-			document.getElementById("messages").style.display = "none";
+			document.getElementById("messages").style.display = "none";      
+			document.getElementById("gcSettings").style.display = "none";
 
 			function markdown(str) {
 				for (i=0;i<markdownSymbols.length;i++) {
 					while (str.includes("*" + markdownSymbols[i] + "*")) {
-					str = str.replace("*" + markdownSymbols[i] + "*", "<" + markdownSymbols[i] + ">");
+					str = str.replace("*" + markdownSymbols[i] + "*", markdownResults[i]);
 					}
 				}
 					return str;
 			}
+			
       function settings() {
         var sideBarIcons = document.getElementById("sideBarIcons");
         var sideBar = document.getElementById("sideBar");
         var sideBarSettings = document.getElementById("sideBarSettings");
+				gcSettingsToggled = false;
+				document.getElementById("gcSettings").style.display="none";
         if (settingsToggled) {
           sideBar.style.position = "fixed";
 					sideBar.style.height = "100vh";
@@ -412,6 +423,30 @@
           sideBar.style.width = "100vw";
           sideBarIcons.style.display = "none";
           document.getElementById("settings").style.display = "block";
+        }
+      }
+			
+			function gcSettings() {
+        var sideBarIcons = document.getElementById("sideBarIcons");
+        var sideBar = document.getElementById("sideBar");
+        var sideBarSettings = document.getElementById("sideBarSettings");
+				settingsToggled = false;
+				document.getElementById("settings").style.display="none";
+        if (gcSettingsToggled) {
+          sideBar.style.position = "fixed";
+					sideBar.style.height = "100vh";
+          sideBar.style.width = "40px";
+          sideBarIcons.style.display = "inline";
+          document.getElementById("gcSettings").style.display = "none";
+          gcSettingsToggled = false;
+        } else {
+          sideBar.style.position = "fixed";
+          sideBar.style.height = "150vh";
+					document.getElementById("gcSettings").scrollIntoView();
+          gcSettingsToggled = true;
+          sideBar.style.width = "100vw";
+          sideBarIcons.style.display = "none";
+          document.getElementById("gcSettings").style.display = "block";
         }
       }
 
@@ -518,7 +553,7 @@
         }
         if (inputVal != "") {
           document.getElementById("messages").innerHTML += html;
-					sendMessage(html);
+					sendMessage(markdown(html));
 					document.getElementById("bottomSpacer").scrollIntoView();
           document.getElementById("chatbox").value = "";
         }
@@ -601,9 +636,9 @@
 			dbGet.on('value', (data) => {
 			  viewedMessages.push(data.val());
         document.getElementById("messages").innerHTML += "<div class='message'>" + data.val() + "</div>";
+				document.getElementById("bottomSpacer").scrollIntoView();
 				document.getElementById("bottomSpacer").remove();
 				document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>";
-				document.getElementById("bottomSpacer").scrollIntoView();
       });
 
       setInterval(checkChats, 500);
