@@ -196,6 +196,11 @@
         z-index: 100
       }
 
+			.timestamp {
+				color: #bbbbbb;
+				font-size: 10px;
+				margin-left: 10px;
+			}
       #messageNameViewer {
         position: fixed;
         height: 30px;
@@ -374,7 +379,7 @@
     <div id="messageNameViewer"></div>
     <div class="bottomBar" id="messageBar">
       <center>
-        <input type="text" autocomplete="off" id="chatbox" placeholder="Type your message here!">
+        <input type="text" autocomplete="off" id="chatbox" placeholder="Type your message here!" maxlength="500">
         <button type="button" onclick="sendMsgFromInput()">Send</button>
       </center>
     </div>
@@ -417,6 +422,7 @@
       var settingsToggled = false;
       var gcSettingsToggled = false;
 			var mkdwnSettingsToggled = false;
+			var date = new Date();
       var messageBar = document.getElementById("messageBar");
       var loginScreen = document.getElementById("loginScreen");
       var lastMessage;
@@ -544,7 +550,7 @@
         var loginButton = document.getElementById("loginButton");
         loginButton.setAttribute("onClick", "signUp(document.getElementById('loginUser').value,document.getElementById('loginPwd').value, '')");
         loginButton.innerText = "Sign up";
-        document.getElementById("signUpMessage").style.display = "none";
+        document.getElementById("signUpMessage").innerHTML = "";
       }
 
       function login(user, password) {
@@ -571,7 +577,7 @@
       }
 
       function signUp(user, password, picture) {
-        if (!(users.includes(user))) {
+        if (!(users.includes(user)) && user != null && user != "") {
           var pic = picture;
           if (!(isValidUrl(pic))) {
             pic = "https://pic.onlinewebfonts.com/svg/img_365985.png";
@@ -583,12 +589,15 @@
             roleColor: "#ffffff",
             profilePicture: picture
           });
-          location.reload();
-        }
+					document.getElementById("signUpMessage").innerHTML = "Signed up successfully!";
+          setTimeout(() => {location.reload();}, 1000);
+        } else {
+					        document.getElementById("signUpMessage").innerHTML = "User already exists!";
+				}
       }
 
       function newChat(name, picture, users) {
-        if (!(chats.includes(name))) {
+        if (!(chats.includes(name)) && name != null && name != "") {
           var pic = picture;
           if (!(isValidUrl(pic))) {
             pic = "https://upload.wikimedia.org/wikipedia/commons/3/39/Internet-group-chat.svg";
@@ -646,10 +655,11 @@
         inputVal = inputVal.replace(/</g, "&lt;");
         inputVal = inputVal.replace(/>/g, "&gt;");
         var html;
+				var timestamp = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear() + " at " + date.getHours() + ":" + date.getMinutes();
         if (document.getElementById("messages").lastChild.previousSibling.innerHTML.includes("f109283hr" + username)) {
           html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span>";
         } else {
-          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><span> " + username + ":</span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
+          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><span> " + username + ":<span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
         }
         if (inputVal != "") {
           sendMessage(markdown(html));
@@ -726,7 +736,7 @@
       }
 
       function loginFromCookie() {
-        if (window.localStorage.getItem("username") != undefined && username == "") {
+        if (window.localStorage.getItem("username") != undefined && window.localStorage.getItem("username") != "" && username == "") {
           login(window.localStorage.getItem("username"), window.localStorage.getItem("password"));
         }
       }
