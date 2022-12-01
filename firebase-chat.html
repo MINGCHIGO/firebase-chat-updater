@@ -607,7 +607,7 @@
           database.ref("users/" + user).set({
             username: user,
             password: password,
-            role: "User",
+            role: "",
             roleColor: "#ffffff",
             profilePicture: picture
           });
@@ -695,7 +695,11 @@
         if (document.getElementById("messages").lastChild.previousSibling.innerHTML.includes("f109283hr" + username)) {
           html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span>";
         } else {
-          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><b> " + username + ":</b><span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
+					var roleUsername = role + "</span></b><b> " + username;
+					if (role == "") {
+						roleUsername = role + "</span></b><b>" + username
+					}
+          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + roleUsername + ":</b><span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
         }
         if (inputVal != "") {
           sendMessage(markdown(html));
