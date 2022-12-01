@@ -635,6 +635,7 @@
       }
 
       function showMessages(data) {
+				lastMessage = "";
         document.getElementById("messages").innerHTML = "";
         for (i = 0; i < data.length - 1; i++) {
 					if (data[i] != undefined) {
@@ -643,23 +644,32 @@
         }
       }
 
-      async function sendMessage(message) {
+    function sendMessage(message) {
         var m = message;
         database.ref("messages/" + viewedChat + "/messages").child(viewedMessages.length - 1).set(m);
 				viewedMessages.push(m);
         database.ref("messages/" + viewedChat).child("lastMessage").set(m);
       }
 
-      async function sendMsgFromInput() {
+       function sendMsgFromInput() {
         var inputVal = document.getElementById("chatbox").value;
         inputVal = inputVal.replace(/</g, "&lt;");
         inputVal = inputVal.replace(/>/g, "&gt;");
         var html;
-				var timestamp = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear() + " at " + date.getHours() + ":" + date.getMinutes();
+				var hours = date.getHours();
+				var minutes = date.getMinutes();
+				if (minutes.length == 0 || minutes.length == 1) {
+				if (minutes.length == 0) {
+					minutes = 00;
+				} else {
+				minutes = "0" + minutes;
+				}
+				}
+				var timestamp = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear() + " at " + date.getHours() + ":" + minutes;
         if (document.getElementById("messages").lastChild.previousSibling.innerHTML.includes("f109283hr" + username)) {
           html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span>";
         } else {
-          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><span> " + username + ":<span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
+          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><b> " + username + ":</b><span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
         }
         if (inputVal != "") {
           sendMessage(markdown(html));
