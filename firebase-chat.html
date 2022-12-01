@@ -12,6 +12,10 @@
       body {
         background-color: #222222;
       }
+			
+			#bottomSpacer {
+				height: 50px;
+			}
 
       * {
         font-family: Verdana;
@@ -166,6 +170,10 @@
       #gcIcon {
         display: inline;
       }
+			
+			#mkdwnIcon {
+				display: inline;
+			}
 
       .titleBarImg {
         width: 20px;
@@ -212,6 +220,11 @@
         padding: 20px;
         border-radius: 10px;
       }
+			
+			.mkdwnExample {
+				color: #dddddd;
+				
+			}
 
     </style>
   </head>
@@ -229,10 +242,32 @@
           <img src="https://lh3.googleusercontent.com/u/0/drive-viewer/AFDK6gO55c7JUfgBBPNG76zv747UV8G6gQ2EH9EFJoLJa0DMkhuPAsvo1DRofhsipomfsEYKSR2-gzL4WoinpyZCfmXTz_3iVQ=w2224-h1466" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px;">
         </div>
         <div id="gcIcon" onclick="gcSettings()">
-          <img src="https://i.ibb.co/Hp0t73K/66-D3-E8-DC-4173-46-F4-B43-E-CACD5-EE1-F081.jpg" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px;">
+          <img src="https://i.ibb.co/Hp0t73K/66-D3-E8-DC-4173-46-F4-B43-E-CACD5-EE1-F081.jpg" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px;display: inline;">
+        </div>
+				<div id="mkdwnIcon" onclick="mkdwnSettings()"> 
+				<img src="data:image/png;base64,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" class="sideBarImg" style="width: 35px; height: 35px; margin-left: 3px; display: inline;">
         </div>
       </div>
       <div id="settingsContainer">
+				<div id="mkdwnSettings" class="settings">
+					Markdown Guide:
+					<br>
+					<br>
+					<ul>
+					<li>New Line: <span class="mkdwnExample">*br*</span></li>
+					<li>Bold text: <span class="mkdwnExample">*b*[text]*/b*</span></li>
+					<li>Italics: <span class="mkdwnExample">*i*[text]*/i*</span></li>
+					<li>Underline: <span class="mkdwnExample">*u*[text]*/u*</span></li>
+					<li>Link: <span class="mkdwnExample">*link*[URL]*/link*</span></li>
+					<li>Img: <span class="mkdwnExample">*img*[URL]*/img*</span></li>
+					<li>Strikethrough: <span class="mkdwnExample">*strike*[text]*/strike*</span></li>
+					<li>Superscript: <span class="mkdwnExample">*sup*[text]*/sup*</span></li>
+					<li>Subscript; <span class="mkdwnExample">*sub*[text]*/sub*</span></li>
+					
+					<li>Block Quote: <span class="mkdwnExample">*quote*[text]*/quote*</span></li>
+					<li>Code: <span class="mkdwnExample">*code*[text]*/code*</span></li>
+					</ul>
+				</div>
         <div id="gcSettings" class="settings">
           Group Chat Actions:
           <br>
@@ -363,8 +398,8 @@
       firebase.initializeApp(firebaseConfig);
       //init vars
       var database = firebase.database();
-      var markdownSymbols = ["b", "i", "u", "link", "img", "strike", "sub", "sup", "h1", "h2", "h3", "h4", "h5", "h6", "/b", "/i", "/u", "/link", "/img", "/strike", "/sub", "/sup", "/h1", "/h2", "/h3", "/h4", "/h5", "/h6", "br", "quote", "/quote", "code", "/code"];
-      var markdownResults = ["<b>", "<i>", "<u>", "<a href='", "<img src='", "<s>", "<sub>", "<sup>", "<h1>", "<h2>", "<h3>", "<h4>", "<h5>", "<h6>", "</b>", "</i>", "</u>", "'>Link</a>", "'>", "</s>", "</sub>", "</sup>", "</h1>", "</h2>", "</h3>", "</h4>", "</h5>", "</h6>", "<br>", "<blockquote>", "</blockquote>", "<code>", "</code>"];
+      var markdownSymbols = ["b", "i", "u", "link", "img", "strike", "sub", "sup", "/b", "/i", "/u", "/link", "/img", "/strike", "/sub", "/sup", "br", "quote", "/quote", "code", "/code"];
+      var markdownResults = ["<b>", "<i>", "<u>", "<a href='", "<img src='", "<s>", "<sub>", "<sup>", "</b>", "</i>", "</u>", "'>Link</a>", "'>", "</s>", "</sub>", "</sup>", "<br>", "<blockquote>", "</blockquote>", "<code>", "</code>"];
       var users = [];
       var chats = [];
       var viewedChat = "";
@@ -381,8 +416,10 @@
       var pfps = [];
       var settingsToggled = false;
       var gcSettingsToggled = false;
+			var mkdwnSettingsToggled = false;
       var messageBar = document.getElementById("messageBar");
       var loginScreen = document.getElementById("loginScreen");
+      var lastMessage;
       var prevMessages;
       //init db refs
       database.ref().child('users').on('child_added', data => {
@@ -400,6 +437,7 @@
       document.getElementById("messageNameViewer").style.display = "none";
       document.getElementById("messages").style.display = "none";
       document.getElementById("gcSettings").style.display = "none";
+			document.getElementById("mkdwnSettings").style.display = "none";
 
       const isValidUrl = urlString => {
         let url;
@@ -426,6 +464,8 @@
         var sideBarSettings = document.getElementById("sideBarSettings");
         gcSettingsToggled = false;
         document.getElementById("gcSettings").style.display = "none";
+				mkdwnSettingsToggled = false;
+				document.getElementById("mkdwnSettings").style.display = "none";
         if (settingsToggled) {
           sideBar.style.position = "fixed";
           sideBar.style.height = "100vh";
@@ -444,6 +484,34 @@
           document.getElementById("settings").style.display = "block";
         }
       }
+			
+			function mkdwnSettings() {
+        var sideBarIcons = document.getElementById("sideBarIcons");
+        var sideBar = document.getElementById("sideBar");
+        var sideBarSettings = document.getElementById("sideBarSettings");
+        gcSettingsToggled = false;
+        settingsToggled = false;
+        document.getElementById("gcSettings").style.display = "none";
+				document.getElementById("mkdwnSettings").style.display = "none";
+				document.getElementById("settings").style.display = "none";
+        if (mkdwnSettingsToggled) {
+          sideBar.style.position = "fixed";
+          sideBar.style.height = "100vh";
+          sideBar.style.width = "40px";
+          sideBarIcons.style.display = "inline";
+          document.getElementById("mkdwnSettings").style.display = "none";
+          mkdwnSettingsToggled = false;
+        } else {
+          sideBar.style.position = "fixed";
+          sideBar.style.height = "150vh";
+          document.getElementById("mkdwnSettings").scrollIntoView();
+          mkdwnSettingsToggled = true;
+          sideBar.style.width = "100vw";
+          sideBarIcons.style.display = "none";
+          sideBarIcons.style.width = "100vw";
+          document.getElementById("mkdwnSettings").style.display = "block";
+        }
+      }
 
       function gcSettings() {
         var sideBarIcons = document.getElementById("sideBarIcons");
@@ -451,6 +519,8 @@
         var sideBarSettings = document.getElementById("sideBarSettings");
         settingsToggled = false;
         document.getElementById("settings").style.display = "none";
+				mkdwnSettingsToggled = false;
+				document.getElementById("mkdwnSettings").style.display = "none";
         if (gcSettingsToggled) {
           sideBar.style.position = "fixed";
           sideBar.style.height = "100vh";
@@ -557,19 +627,21 @@
 
       function showMessages(data) {
         document.getElementById("messages").innerHTML = "";
-        for (i = 0; i < data.length; i++) {
-          document.getElementById("messages").innerHTML += "<div class='message'>" + data[i] + "</div>";
+        for (i = 0; i < data.length - 1; i++) {
+					if (data[i] != undefined) {
+					 document.getElementById("messages").innerHTML += "<div class='message'>" + data[i] + "</div>";
+					 }
         }
       }
 
-      function sendMessage(message) {
+      async function sendMessage(message) {
         var m = message;
-        viewedMessages.push(m);
         database.ref("messages/" + viewedChat + "/messages").child(viewedMessages.length - 1).set(m);
+				viewedMessages.push(m);
         database.ref("messages/" + viewedChat).child("lastMessage").set(m);
       }
 
-      function sendMsgFromInput() {
+      async function sendMsgFromInput() {
         var inputVal = document.getElementById("chatbox").value;
         inputVal = inputVal.replace(/</g, "&lt;");
         inputVal = inputVal.replace(/>/g, "&gt;");
@@ -580,7 +652,6 @@
           html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + role + "</span></b><span> " + username + ":</span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
         }
         if (inputVal != "") {
-          document.getElementById("messages").innerHTML += html;
           sendMessage(markdown(html));
           document.getElementById("bottomSpacer").scrollIntoView();
           document.getElementById("chatbox").value = "";
@@ -627,7 +698,7 @@
       }
 
       function checkMessages() {
-        database.ref('messages/' + viewedChat + "/messages").on('value', (data) => {
+        database.ref('messages/' + viewedChat + "/messages").get().then((data) => {
           viewedMessages = data.val();
           showMessages(viewedMessages);
           document.getElementById("messages").innerHTML += '<div class="spacer" id="bottomSpacer"></div>';
@@ -635,6 +706,7 @@
       }
 
       function checkChats() {
+				checkMsgs();
         viewedUsers = [];
         document.getElementById("sideBarImg").innerHTML = "<img src='" + profilePicture + "' class='sideBarImg'>";
         document.getElementById("chats").innerHTML = "";
@@ -658,17 +730,19 @@
           login(window.localStorage.getItem("username"), window.localStorage.getItem("password"));
         }
       }
-      var dbGet;
-      dbGet = database.ref('messages/' + viewedChat + "/lastMessage");
-
-      dbGet.on('value', (data) => {
-        viewedMessages.push(data.val());
-        document.getElementById("messages").innerHTML += "<div class='message'>" + data.val() + "</div>";
-        document.getElementById("bottomSpacer").scrollIntoView();
-        document.getElementById("bottomSpacer").remove();
-        document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>";
-      });
-
+			function checkMsgs() {
+     database.ref('messages/' + viewedChat + "/lastMessage").on('value',(data) => {
+		 if (data.val() != lastMessage) {
+		 				lastMessage = data.val();
+            viewedMessages.push(data.val());
+            document.getElementById("messages").innerHTML += "<div class='message'>" + data.val() + "</div>";
+						document.getElementById("bottomSpacer").scrollIntoView();
+            document.getElementById("bottomSpacer").remove();
+            document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>";
+						}
+        });
+				}
+				
       setInterval(checkChats, 500);
       setInterval(loginFromCookie, 500);
       document.addEventListener("keyup", function(event) {
