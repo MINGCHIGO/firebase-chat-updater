@@ -14,7 +14,7 @@
       }
 
       #bottomSpacer {
-        height: 50px;
+        height: 75px;
       }
 
       * {
@@ -84,7 +84,7 @@
         margin-left: 35px;
         padding-top: 5px;
         padding-bottom: 5px;
-				z-index: 10;
+        z-index: 1;
         border-top: var(--accent) 2px solid;
       }
 
@@ -194,7 +194,7 @@
         height: 100%;
         transition-duration: 0.3s;
         overflow: scroll;
-        z-index: 100
+        z-index: 100;
       }
 
       .timestamp {
@@ -210,11 +210,12 @@
         top: 120px;
         padding-left: 10px;
         border-bottom: var(--accent) 2px solid;
+        border-left: var(--accent) 2px solid;
         font-size: 20px;
         width: 100%;
         background-color: black;
         text-align: vertical;
-				z-index: 4;
+        z-index: 0;
       }
 
       #loginShrink {
@@ -233,31 +234,73 @@
         color: #dddddd;
 
       }
-			
-			#pplInChat {
-				position: fixed;
-				right: 0;
-				width: 150px;
-				top: 154px;
-				height: 100vh;
-				z-index: 1;
-				background-color: black;
-				padding-top: 10px;
-				padding-left:10px;
-				border-left: var(--accent) 2px solid;
-			}
-			
-			.usersChat {
-				font-size: 10px;
-				color: #dddddd;
-			}
+
+      #pplInChat {
+        position: fixed;
+        right: 0;
+        width: 150px;
+        top: 152px;
+        height: 100vh;
+        z-index: 1;
+        background-color: black;
+        padding-top: 10px;
+        padding-left: 10px;
+        border-left: var(--accent) 2px solid;
+      }
+
+      .usersChat {
+        font-size: 10px;
+        color: #dddddd;
+      }
+
+      .selected {
+        border: var(--accent) 2px solid;
+        padding: 8px !important;
+      }
+
+      .sideUserPfp {
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        overflow: hidden;
+        display: inline;
+        object-fit: cover;
+        margin-right: 5px;
+        margin-left: 5px;
+        margin-bottom: -5px;
+        margin-top: 5px;
+      }
+
+      #sideUserPics {
+        display: inline;
+        width: 30px;
+      }
+
+      #sideUsernames {
+        left: 40px;
+        position: absolute;
+        top: 37px;
+        margin-bottom: 5px;
+      }
+
+      .usernameSide {
+        margin-bottom: 10px;
+        display: block;
+      }
 
     </style>
   </head>
 
   <body>
-		<div id="pplInChat">
+    <div id="pplInChat">
+      Users:
+      <br>
+      <div id="sideUserPics">
 
+      </div>
+      <div id="sideUsernames">
+
+      </div>
     </div>
     <div id="sideBar">
       <div id="sideBarIcons">
@@ -329,9 +372,11 @@
           </div>
           <br>
           <br>
+					<div class="highRankingOfficials">
           <div id="gcPfp">
-            Change your group chat's picture (Note: you must select a group chat first):
+            Change your group chat's info (Note: you must select a group chat first):
             <br>
+						<input type="text" placeholder="Write a new name here!" id="gcName2Input">
             <input type="text" placeholder="Paste an image link here!" id="gcPfp2Input">
             <br>
             <button type="button" onclick="gcPfp()">
@@ -342,6 +387,7 @@
             </div>
 
           </div>
+					</div>
         </div>
         <div id="settings" class="settings">
           Settings:
@@ -380,9 +426,9 @@
     <center>
       <div id='loginScreen'>
         <div id='loginShrink'>
-          <input type="text" placeholder="Username" id="loginUser">
+          <input type="text" placeholder="Username" id="loginUser" maxlength=20 >
           <br>
-          <input type="password" placeholder="Password" id="loginPwd">
+          <input type="password" placeholder="Password" id="loginPwd" maxlength=100>
           <br>
           <button type="button" onclick='login(document.getElementById("loginUser").value,document.getElementById("loginPwd").value)' id="loginButton">
             Log in
@@ -466,7 +512,7 @@
       document.getElementById("messages").style.display = "none";
       document.getElementById("gcSettings").style.display = "none";
       document.getElementById("mkdwnSettings").style.display = "none";
-			document.getElementById("pplInChat").style.display = "none";
+      document.getElementById("pplInChat").style.display = "none";
 
       const isValidUrl = urlString => {
         let url;
@@ -540,6 +586,13 @@
           sideBarIcons.style.width = "100vw";
           document.getElementById("mkdwnSettings").style.display = "block";
         }
+      }
+
+      function scrollToBottom() {
+        document.getElementById("bottomSpacer").scrollIntoView({
+          block: "end",
+          behavior: "auto"
+        });
       }
 
       function gcSettings() {
@@ -646,7 +699,7 @@
       }
 
       function viewChat(messages) {
-			  document.getElementById("pplInChat").style.display = "block";
+        document.getElementById("pplInChat").style.display = "block";
         document.getElementById("messageNameViewer").style.display = "block";
         viewedChat = messages;
         messageBar.style.visibility = "visible";
@@ -655,7 +708,7 @@
         database.ref("chats/" + viewedChat).get().then((data) => {
           document.getElementById("messageNameViewer").innerHTML = "<img src='" + data.val().picture + "' class='pfpImage titleBarImg'> " + messages;
           setTimeout(() => {
-            document.getElementById("bottomSpacer").scrollIntoView();
+            scrollToBottom();
           }, 500);
         })
       }
@@ -696,15 +749,15 @@
         if (document.getElementById("messages").lastChild.previousSibling.innerHTML.includes("f109283hr" + username)) {
           html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span>";
         } else {
-					var roleUsername = role + "</span></b><b> " + username;
-					if (role == "") {
-						roleUsername = role + "</span></b><b>" + username
-					}
+          var roleUsername = role + "</span></b><b> " + username;
+          if (role == "") {
+            roleUsername = role + "</span></b><b>" + username
+          }
           html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + roleUsername + ":</b><span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
         }
         if (inputVal != "") {
           sendMessage(markdown(html));
-          document.getElementById("bottomSpacer").scrollIntoView();
+          scrollToBottom();
           document.getElementById("chatbox").value = "";
         }
       }
@@ -741,8 +794,11 @@
         if (viewedChat != "") {
           var pfp = document.getElementById("gcPfp2Input").value;
           database.ref("chats/" + viewedChat + "/picture").set(pfp);
+				 var name = document.getElementById("gcName2Input").value;
+          database.ref("chats/" + viewedChat + "/name").set(name);
+					 database.ref("chats/" + viewedChat).set(name);
           document.getElementById("gcPfp2Input").value = "";
-          document.getElementById("gcPfpMessage").innerHTML = 'The picture of the group chat has changed!';
+          document.getElementById("gcPfpMessage").innerHTML = 'The info of the group chat has been changed!';
         } else {
           document.getElementById("gcPfpMessage").innerHTML = "You must select a group chat first!";
         }
@@ -764,7 +820,11 @@
         database.ref('chats').on('child_added', data => {
           if (data.val().users.includes(username)) {
             chats.push(data.val().name);
-            document.getElementById("chats").innerHTML += "<div class='groupChat gcchate' onclick='viewChat(\"" + data.val().name + "\")'><img src='" + data.val().picture + "'><a class='groupChatName'>" + data.val().name + "</a></div>";
+            if (viewedChat == data.val().name) {
+              document.getElementById("chats").innerHTML += "<div class='groupChat selected gcchate' onclick='viewChat(\"" + data.val().name + "\")'><img src='" + data.val().picture + "'><a class='groupChatName'>" + data.val().name + "</a></div>";
+            } else {
+              document.getElementById("chats").innerHTML += "<div class='groupChat gcchate' onclick='viewChat(\"" + data.val().name + "\")'><img src='" + data.val().picture + "'><a class='groupChatName'>" + data.val().name + "</a></div>";
+            }
           }
         });
         if (document.getElementById("chats").innerHTML == "") {
@@ -772,10 +832,16 @@
           document.getElementById("chats").innerHTML = document.getElementById("chats").innerHTML + "<div class='groupChat'><a class='groupChatName'>You are not in any chats.</a></div>";
         }
         database.ref().child('chats/' + viewedChat + "/users").get().then(data => {
-				document.getElementById("pplInChat").innerHTML = "Users:<br>";
-          for (i=0;i<data.val().length;i++) {
-						document.getElementById("pplInChat").innerHTML += "<span class='usersChat'>" + data.val()[i] + "</span><br>";
-					}
+          document.getElementById("sideUsernames").innerHTML = "";
+          document.getElementById("sideUserPics").innerHTML = "";
+          for (i = 0; i < data.val().length; i++) {
+            var name = data.val()[i];
+            viewedUsers.push(name);
+            database.ref().child("users/" + name + "/profilePicture").get().then(d2 => {
+              document.getElementById("sideUserPics").innerHTML += "<img src='" + d2.val() + "' class='sideUserPfp'><br>";
+            });
+            document.getElementById("sideUsernames").innerHTML += "<span class='usersChat usernameSide'>" + name + "</span>";
+          }
         });
 
       }
@@ -792,7 +858,7 @@
             lastMessage = data.val();
             viewedMessages.push(data.val());
             document.getElementById("messages").innerHTML += "<div class='message'>" + data.val() + "</div>";
-            document.getElementById("bottomSpacer").scrollIntoView();
+            scrollToBottom();
             document.getElementById("bottomSpacer").remove();
             document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>";
           }
