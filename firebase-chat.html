@@ -176,6 +176,10 @@
         display: inline;
       }
 
+      .gcOnly {
+        display: none;
+      }
+
       .titleBarImg {
         width: 20px;
         height: 20px;
@@ -325,18 +329,40 @@
           <br>
           <br>
           <ul>
-            <li>New Line: <span class="mkdwnExample">*br*</span></li>
-            <li>Bold text: <span class="mkdwnExample">*b*[text]*/b*</span></li>
-            <li>Italics: <span class="mkdwnExample">*i*[text]*/i*</span></li>
-            <li>Underline: <span class="mkdwnExample">*u*[text]*/u*</span></li>
-            <li>Link: <span class="mkdwnExample">*link*[URL]*/link*</span></li>
-            <li>Img: <span class="mkdwnExample">*img*[URL]*/img*</span></li>
-            <li>Strikethrough: <span class="mkdwnExample">*strike*[text]*/strike*</span></li>
-            <li>Superscript: <span class="mkdwnExample">*sup*[text]*/sup*</span></li>
-            <li>Subscript; <span class="mkdwnExample">*sub*[text]*/sub*</span></li>
+            <li>New Line:
+              <span class="mkdwnExample">*br*</span>
+            </li>
+            <li>Bold text:
+              <span class="mkdwnExample">*b*[text]*/b*</span>
+            </li>
+            <li>Italics:
+              <span class="mkdwnExample">*i*[text]*/i*</span>
+            </li>
+            <li>Underline:
+              <span class="mkdwnExample">*u*[text]*/u*</span>
+            </li>
+            <li>Link:
+              <span class="mkdwnExample">*link*[URL]*/link*</span>
+            </li>
+            <li>Img:
+              <span class="mkdwnExample">*img*[URL]*/img*</span>
+            </li>
+            <li>Strikethrough:
+              <span class="mkdwnExample">*strike*[text]*/strike*</span>
+            </li>
+            <li>Superscript:
+              <span class="mkdwnExample">*sup*[text]*/sup*</span>
+            </li>
+            <li>Subscript:
+              <span class="mkdwnExample">*sub*[text]*/sub*</span>
+            </li>
 
-            <li>Block Quote: <span class="mkdwnExample">*quote*[text]*/quote*</span></li>
-            <li>Code: <span class="mkdwnExample">*code*[text]*/code*</span></li>
+            <li>Block Quote:
+              <span class="mkdwnExample">*quote*[text]*/quote*</span>
+            </li>
+            <li>Code:
+              <span class="mkdwnExample">*code*[text]*/code*</span>
+            </li>
           </ul>
         </div>
         <div id="gcSettings" class="settings">
@@ -355,10 +381,10 @@
           <div id="gcMessage">
 
           </div>
-          <br>
-          <br>
-          <div id="inviteGc">
-            Invite users to your group chat (Note: Make sure you have selected a group chat first):
+          <div id="inviteGc" class="gcOnly">
+            <br>
+            <br>
+            Invite users to your group chat:
             <br>
             <input type="text" placeholder="Write a user's name here!" id="inviteInput">
             <br>
@@ -368,26 +394,29 @@
             <div id="inviteMessage">
 
             </div>
-
           </div>
-          <br>
-          <br>
-					<div class="highRankingOfficials">
-          <div id="gcPfp">
-            Change your group chat's info (Note: you must select a group chat first):
+          <div class="highRankingOfficials gcOnly">
             <br>
-						<input type="text" placeholder="Write a new name here!" id="gcName2Input">
-            <input type="text" placeholder="Paste an image link here!" id="gcPfp2Input">
             <br>
-            <button type="button" onclick="gcPfp()">
-              Change
-            </button>
-            <div id="gcPfpMessage">
+            <div id="gcPfp">
+              Change your group chat's picture:
+              <br>
+              <!--<input type="text" placeholder="Write a new name here!" id="gcName2Input">!-->
+              <input type="text" placeholder="Paste an image link here!" id="gcPfp2Input">
+              <br>
+              <button type="button" onclick="gcPfp()">
+                Change
+              </button>
+              <div id="gcPfpMessage">
 
+              </div>
             </div>
-
           </div>
-					</div>
+          <br>
+          <br>
+          <button id="leaveChat" class="gcOnly" onclick="leaveChat()">
+            Leave this Chat
+          </button>
         </div>
         <div id="settings" class="settings">
           Settings:
@@ -426,7 +455,7 @@
     <center>
       <div id='loginScreen'>
         <div id='loginShrink'>
-          <input type="text" placeholder="Username" id="loginUser" maxlength=20 >
+          <input type="text" placeholder="Username" id="loginUser" maxlength=20>
           <br>
           <input type="password" placeholder="Password" id="loginPwd" maxlength=100>
           <br>
@@ -491,6 +520,8 @@
       var settingsToggled = false;
       var gcSettingsToggled = false;
       var mkdwnSettingsToggled = false;
+      var gcOnly = document.querySelectorAll(".gcOnly");
+      var highOnly = document.querySelectorAll(".highRankingOfficials");
       var messageBar = document.getElementById("messageBar");
       var loginScreen = document.getElementById("loginScreen");
       var lastMessage;
@@ -503,7 +534,7 @@
         roles.push(data.val().role);
         pfps.push(data.val().profilePicture);
       });
-      //init funcs
+      //init elements
       messageBar.style.visibility = "hidden";
       document.getElementById("chats").style.visibility = "hidden";
       document.getElementById("settings").style.display = "none";
@@ -513,6 +544,7 @@
       document.getElementById("gcSettings").style.display = "none";
       document.getElementById("mkdwnSettings").style.display = "none";
       document.getElementById("pplInChat").style.display = "none";
+      //init funcs
 
       const isValidUrl = urlString => {
         let url;
@@ -522,6 +554,28 @@
           return false;
         }
         return url.protocol === "http:" || url.protocol === "https:";
+      }
+
+      function checkGc() {
+        if (viewedChat != "") {
+          for (i = 0; i < gcOnly.length; i++) {
+            gcOnly[i].style.display = "block";
+          }
+        }
+      }
+
+      function leaveChat() {
+        var indexOfUser = viewedUsers.indexOf(username);
+        viewedUsers.splice(indexOfUser, indexOfUser + 1);
+        console.log(viewedUsers);
+        database.ref("chats/" + viewedChat + "/users").set(viewedUsers);
+        if (viewedUsers.length == 0) {
+          database.ref("chats/" + viewedChat).set(null);
+          database.ref("messages/" + viewedChat).set(null);
+        } else {
+          sendMessage(username + " has left the chat.");
+        }
+        viewChat(chats[0]);
       }
 
       function markdown(str) {
@@ -638,6 +692,11 @@
             roleColor = roleColors[indexOfUsername];
             role = roles[indexOfUsername];
             profilePicture = pfps[indexOfUsername];
+            if (role == "") {
+              for (i = 0; i < highOnly.length; i++) {
+                highOnly[i].style.display = "none";
+              }
+            }
             document.getElementById("chats").style.visibility = "visible";
             loginScreen.style.display = "none";
             document.getElementById("sideBar").style.display = "block";
@@ -656,14 +715,14 @@
         if (!(users.includes(user)) && user != null && user != "") {
           var pic = picture;
           if (!(isValidUrl(pic))) {
-            pic = "https://pic.onlinewebfonts.com/svg/img_365985.png";
+            pic = "https://i.ibb.co/Xx5LvT9/50-EF0-D70-FDE6-4-EAC-83-F2-BCE9-BE4-C35-A3.png";
           }
           database.ref("users/" + user).set({
             username: user,
             password: password,
             role: "",
             roleColor: "#ffffff",
-            profilePicture: picture
+            profilePicture: pic
           });
           document.getElementById("signUpMessage").innerHTML = "Signed up successfully!";
           setTimeout(() => {
@@ -678,7 +737,7 @@
         if (!(chats.includes(name)) && name != null && name != "") {
           var pic = picture;
           if (!(isValidUrl(pic))) {
-            pic = "https://upload.wikimedia.org/wikipedia/commons/3/39/Internet-group-chat.svg";
+            pic = "https://i.ibb.co/RBKrnCV/45011717-A45-F-403-D-9-EC4-0-C9-D7-A0-FFD53.jpg";
           }
           database.ref("chats/" + name).set({
             name: name,
@@ -689,6 +748,8 @@
           obj = JSON.parse(obj);
           database.ref("messages/" + name).set(obj);
         }
+				document.getElementById("gcPfpInput").value = "";
+				document.getElementById("gcNameInput").value = "";
         document.getElementById("gcMessage").innerHTML = "Chat created successfully!";
       }
 
@@ -766,7 +827,8 @@
         var pfp = document.getElementById("pfpInput").value;
         database.ref("users/" + username + "/profilePicture").set(pfp);
         document.getElementById("pfpInput").value = "";
-        document.getElementById("pfpMessage").innerHTML = "Completed! Reload to see changes.";
+        document.getElementById("pfpMessage").innerHTML = "Completed!";
+				profilePicture = pfp;
 
       }
 
@@ -779,24 +841,31 @@
       }
 
       function inviteUser() {
-        if (viewedChat != "") {
           var user = document.getElementById("inviteInput").value;
+					if (users.includes(user)) {
+					if (viewedUsers.includes(user)) {
+					document.getElementById("inviteMessage").innerHTML = user + " is already in this chat!";
+          document.getElementById("inviteInput").value = "";
+					} else {
           viewedUsers.push(user);
           database.ref("chats/" + viewedChat + "/users").set(viewedUsers);
           document.getElementById("inviteInput").value = "";
           document.getElementById("inviteMessage").innerHTML = user + " has been invited to " + viewedChat + "!";
-        } else {
-          document.getElementById("inviteMessage").innerHTML = "You must select a group chat first!";
-        }
+					}
+					} else {
+					document.getElementById("inviteMessage").innerHTML = user + " doesn't exist.";
+          document.getElementById("inviteInput").value = "";
+					}
       }
 
       function gcPfp() {
         if (viewedChat != "") {
           var pfp = document.getElementById("gcPfp2Input").value;
           database.ref("chats/" + viewedChat + "/picture").set(pfp);
-				 var name = document.getElementById("gcName2Input").value;
+          /*var name = document.getElementById("gcName2Input").value;
           database.ref("chats/" + viewedChat + "/name").set(name);
-					 database.ref("chats/" + viewedChat).set(name);
+					var oldData 
+					 database.ref("chats/" + viewedChat).set(name);*/
           document.getElementById("gcPfp2Input").value = "";
           document.getElementById("gcPfpMessage").innerHTML = 'The info of the group chat has been changed!';
         } else {
@@ -813,6 +882,7 @@
       }
 
       function checkChats() {
+        checkGc();
         checkMsgs();
         viewedUsers = [];
         document.getElementById("sideBarImg").innerHTML = "<img src='" + profilePicture + "' class='sideBarImg'>";
