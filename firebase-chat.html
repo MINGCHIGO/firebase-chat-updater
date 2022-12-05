@@ -555,6 +555,12 @@
         }
         return url.protocol === "http:" || url.protocol === "https:";
       }
+			
+			function clearInfoMsg(element) {
+				setTimeout(() => {
+				element.innerHTML = "";
+				},1000);
+			}
 
       function checkGc() {
         if (viewedChat != "") {
@@ -575,7 +581,11 @@
         } else {
           sendMessage(username + " has left the chat.");
         }
+				if (chats[0] == viewedChat) {
+				viewChat(chats[1]);
+				} else {
         viewChat(chats[0]);
+				}
       }
 
       function markdown(str) {
@@ -709,6 +719,7 @@
         } else {
           loginMessage.innerHTML = "User not found!";
         }
+				clearInfoMsg(loginMessage);
       }
 
       function signUp(user, password, picture) {
@@ -731,6 +742,7 @@
         } else {
           document.getElementById("signUpMessage").innerHTML = "User already exists!";
         }
+				clearInfoMsg(document.getElementById("signUpMessage"));
       }
 
       function newChat(name, picture, users) {
@@ -747,10 +759,13 @@
           obj = '{"messages":["<b>Start of Chat</b>"]}';
           obj = JSON.parse(obj);
           database.ref("messages/" + name).set(obj);
-        }
+					        document.getElementById("gcMessage").innerHTML = "Chat created successfully!";
+        } else {
+        document.getElementById("gcMessage").innerHTML = "There is already another chat with this name!";
+				}
 				document.getElementById("gcPfpInput").value = "";
 				document.getElementById("gcNameInput").value = "";
-        document.getElementById("gcMessage").innerHTML = "Chat created successfully!";
+				clearInfoMsg(document.getElementById("gcMessage"));
       }
 
       function logout() {
@@ -828,6 +843,7 @@
         database.ref("users/" + username + "/profilePicture").set(pfp);
         document.getElementById("pfpInput").value = "";
         document.getElementById("pfpMessage").innerHTML = "Completed!";
+								clearInfoMsg(document.getElementById("pfpMessage"));
 				profilePicture = pfp;
 
       }
@@ -837,6 +853,7 @@
         database.ref("users/" + username + "/password").set(pwd);
         document.getElementById("pwdInput").value = "";
         document.getElementById("pwdMessage").innerHTML = "Completed!";
+								clearInfoMsg(document.getElementById("pwdMessage"));
 
       }
 
@@ -856,6 +873,7 @@
 					document.getElementById("inviteMessage").innerHTML = user + " doesn't exist.";
           document.getElementById("inviteInput").value = "";
 					}
+									clearInfoMsg(document.getElementById("inviteMessage"));
       }
 
       function gcPfp() {
@@ -871,6 +889,7 @@
         } else {
           document.getElementById("gcPfpMessage").innerHTML = "You must select a group chat first!";
         }
+								clearInfoMsg(document.getElementById("gcPfpMessage"));
       }
 
       function checkMessages() {
