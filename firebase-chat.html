@@ -803,6 +803,7 @@
           obj = '{"messages":["<b>Start of Chat</b>"]}';
           obj = JSON.parse(obj);
           database.ref("messages/" + name).set(obj);
+					database.ref("messages/" + name + "/lastMessage").set("");
           popup("Chat created successfully!", 2000)
         } else {
           popup("There is already another chat with this name!", 2000)
