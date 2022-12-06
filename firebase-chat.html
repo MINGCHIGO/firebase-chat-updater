@@ -9,8 +9,26 @@
         --accent: #ff1b2d;
       }
 
-      body {
+      body,
+      html {
         background-color: #222222;
+        position: relative;
+        z-index: -100000;
+      }
+
+      .popup {
+        transition-duration: 1s;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        opacity: 0;
+        z-index: 999999999;
+        background-color: #111111;
+        border-radius: 10px;
+        border-bottom: var(--accent) 2px solid;
+        padding: 5px;
+        width: 100px;
+        font-size: 10px;
       }
 
       #bottomSpacer {
@@ -86,6 +104,8 @@
         padding-bottom: 5px;
         z-index: 1;
         border-top: var(--accent) 2px solid;
+        transition-duration: 1s;
+        opacity: 0;
       }
 
       #sideBar {
@@ -98,7 +118,7 @@
         top: 0;
         left: 0;
         z-index: 3;
-        transition-duration: 0.1s;
+        transition-duration: 0.3s;
       }
 
       .spacer {
@@ -110,7 +130,10 @@
         margin-top: 130px;
         margin-left: 40px;
         overflow: break-word;
-        z-index: -100;
+        z-index: -1;
+        opacity: 0;
+        transition-duration: 1s;
+        position: relative;
       }
 
       .message {
@@ -193,7 +216,7 @@
       }
 
       .settings {
-        width: 100vw;
+        width: 100%;
         padding: 10px;
         height: 100%;
         transition-duration: 0.3s;
@@ -220,10 +243,12 @@
         background-color: black;
         text-align: vertical;
         z-index: 0;
+        transition-duration: 1s;
+        opacity: 0;
       }
 
       #loginShrink {
-        position: absolute;
+        position: fixed;
         top: 50%;
         left: 50%;
         -ms-transform: translate(-50%, -50%);
@@ -250,6 +275,8 @@
         padding-top: 10px;
         padding-left: 10px;
         border-left: var(--accent) 2px solid;
+        transition-duration: 1s;
+        opacity: 0;
       }
 
       .usersChat {
@@ -502,7 +529,7 @@
       //init vars
       var database = firebase.database();
       var markdownSymbols = ["b", "i", "u", "link", "img", "strike", "sub", "sup", "/b", "/i", "/u", "/link", "/img", "/strike", "/sub", "/sup", "br", "quote", "/quote", "code", "/code"];
-      var markdownResults = ["<b>", "<i>", "<u>", "<a href='", "<img style='width: 150px;' src='", "<s>", "<sub>", "<sup>", "</b>", "</i>", "</u>", "'>Link</a>", "'>", "</s>", "</sub>", "</sup>", "<br>", "<blockquote>", "</blockquote>", "<code>", "</code>"];
+      var markdownResults = ["<b>", "<i>", "<u>", "<a href='", "<img style='width: 150px;' src='", "<s>", "<sub>", "<sup>", "</b>", "</i>", "</u>", "'>Link</a>", "'>", "</s>", "</sub>", "</sup>", "<br><span style='margin-left:35px; color: #cccccc;'>", "<blockquote>", "</blockquote>", "<code>", "</code>"];
       var users = [];
       var chats = [];
       var viewedChat = "";
@@ -539,11 +566,9 @@
       document.getElementById("chats").style.visibility = "hidden";
       document.getElementById("settings").style.display = "none";
       document.getElementById("sideBar").style.display = "none";
-      document.getElementById("messageNameViewer").style.display = "none";
       document.getElementById("messages").style.display = "none";
       document.getElementById("gcSettings").style.display = "none";
       document.getElementById("mkdwnSettings").style.display = "none";
-      document.getElementById("pplInChat").style.display = "none";
       //init funcs
 
       const isValidUrl = urlString => {
@@ -555,12 +580,26 @@
         }
         return url.protocol === "http:" || url.protocol === "https:";
       }
-			
-			function clearInfoMsg(element) {
-				setTimeout(() => {
-				element.innerHTML = "";
-				},1000);
-			}
+
+      function popup(message, length) {
+        var poppyuppy = document.createElement("div");
+        poppyuppy.classList.add("popup");
+        poppyuppy.innerHTML = message;
+        document.body.appendChild(poppyuppy)
+        setTimeout(() => {
+          poppyuppy.style.opacity = 1;
+        }, 500)
+        setTimeout(() => {
+          poppyuppy.style.opacity = 0;
+        }, length);
+        clearInfoMsg(poppyuppy);
+      }
+
+      function clearInfoMsg(element) {
+        setTimeout(() => {
+          element.remove();
+        }, 3000);
+      }
 
       function checkGc() {
         if (viewedChat != "") {
@@ -581,11 +620,11 @@
         } else {
           sendMessage(username + " has left the chat.");
         }
-				if (chats[0] == viewedChat) {
-				viewChat(chats[1]);
-				} else {
-        viewChat(chats[0]);
-				}
+        if (chats[0] == viewedChat) {
+          viewChat(chats[1]);
+        } else {
+          viewChat(chats[0]);
+        }
       }
 
       function markdown(str) {
@@ -653,11 +692,18 @@
       }
 
       function scrollToBottom() {
-        document.getElementById("bottomSpacer").scrollIntoView({
-          block: "end",
-          behavior: "auto"
-        });
+        setTimeout(() => {
+          document.getElementById("bottomSpacer").scrollIntoView({
+            block: "end",
+            behavior: "smooth"
+          });
+          document.getElementById("bottomSpacer").scrollIntoView({
+            block: "end",
+            behavior: "auto"
+          });
+        }, 0);
       }
+
 
       function gcSettings() {
         var sideBarIcons = document.getElementById("sideBarIcons");
@@ -714,19 +760,18 @@
             window.localStorage.setItem("username", username);
             window.localStorage.setItem("password", password);
           } else {
-            loginMessage.innerHTML = "Password incorrect!";
+            popup("Password is Incorrect!", 2000)
           }
         } else {
-          loginMessage.innerHTML = "User not found!";
+          popup("User not found!", 2000)
         }
-				clearInfoMsg(loginMessage);
       }
 
       function signUp(user, password, picture) {
         if (!(users.includes(user)) && user != null && user != "") {
           var pic = picture;
           if (!(isValidUrl(pic))) {
-            pic = "https://i.ibb.co/Xx5LvT9/50-EF0-D70-FDE6-4-EAC-83-F2-BCE9-BE4-C35-A3.png";
+            pic = "https://i.ibb.co/znTgzg6/7-F5858-F8-C548-491-F-9-A78-5-DC735310-E97.jpg";
           }
           database.ref("users/" + user).set({
             username: user,
@@ -735,14 +780,13 @@
             roleColor: "#ffffff",
             profilePicture: pic
           });
-          document.getElementById("signUpMessage").innerHTML = "Signed up successfully!";
+          popup("Signed up successfully!", 2000)
           setTimeout(() => {
             location.reload();
           }, 1000);
         } else {
-          document.getElementById("signUpMessage").innerHTML = "User already exists!";
+          popup("User already exists!", 2000)
         }
-				clearInfoMsg(document.getElementById("signUpMessage"));
       }
 
       function newChat(name, picture, users) {
@@ -759,13 +803,12 @@
           obj = '{"messages":["<b>Start of Chat</b>"]}';
           obj = JSON.parse(obj);
           database.ref("messages/" + name).set(obj);
-					        document.getElementById("gcMessage").innerHTML = "Chat created successfully!";
+          popup("Chat created successfully!", 2000)
         } else {
-        document.getElementById("gcMessage").innerHTML = "There is already another chat with this name!";
-				}
-				document.getElementById("gcPfpInput").value = "";
-				document.getElementById("gcNameInput").value = "";
-				clearInfoMsg(document.getElementById("gcMessage"));
+          popup("There is already another chat with this name!", 2000)
+        }
+        document.getElementById("gcPfpInput").value = "";
+        document.getElementById("gcNameInput").value = "";
       }
 
       function logout() {
@@ -775,28 +818,37 @@
       }
 
       function viewChat(messages) {
+        document.getElementById("messages").style.opacity = 0;
         document.getElementById("pplInChat").style.display = "block";
         document.getElementById("messageNameViewer").style.display = "block";
+        document.querySelector("#pplInChat").style.opacity = 1;
+        document.querySelector("#messageNameViewer").style.opacity = 1;
+        document.querySelector(".bottomBar").style.opacity = 1;
         viewedChat = messages;
         messageBar.style.visibility = "visible";
         checkMessages();
-        document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>"
         database.ref("chats/" + viewedChat).get().then((data) => {
           document.getElementById("messageNameViewer").innerHTML = "<img src='" + data.val().picture + "' class='pfpImage titleBarImg'> " + messages;
-          setTimeout(() => {
-            scrollToBottom();
-          }, 500);
+
+
         })
       }
 
       function showMessages(data) {
         lastMessage = "";
         document.getElementById("messages").innerHTML = "";
-        for (i = 0; i < data.length - 1; i++) {
+        var msgs;
+        for (i = 0; i < data.length; i++) {
           if (data[i] != undefined) {
-            document.getElementById("messages").innerHTML += "<div class='message'>" + data[i] + "</div>";
+            msgs = msgs + "<div class='message'>" + data[i] + "</div></b></i></u></code></blockquote></s></sub></sup>";
           }
         }
+        setTimeout(() => {
+          document.getElementById("messages").style.opacity = 1;
+          document.getElementById("messages").innerHTML = msgs;
+          messages.innerHTML += "<div id='bottomSpacer'></div>";
+          scrollToBottom();
+        }, 1000)
       }
 
       function sendMessage(message) {
@@ -804,6 +856,7 @@
         database.ref("messages/" + viewedChat + "/messages").child(viewedMessages.length - 1).set(m);
         viewedMessages.push(m);
         database.ref("messages/" + viewedChat).child("lastMessage").set(m);
+        console.log(m);
       }
 
       function sendMsgFromInput() {
@@ -822,14 +875,14 @@
           }
         }
         var timestamp = date.getMonth() + "/" + date.getDate() + "/" + date.getFullYear() + " at " + date.getHours() + ":" + minutes;
-        if (document.getElementById("messages").lastChild.previousSibling.innerHTML.includes("f109283hr" + username)) {
-          html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span>";
+        if (lastMessage.includes("f109283hr" + username) && lastMessage.includes(timestamp)) {
+          html = "<div style='margin-left:35px;margin-top:-10px; display:inline'><b><span class='f109283hr" + username + "' style='color:#222222'></span></b> <span style='color:#222222'></span></div><span style='color: #cccccc'>" + inputVal + "</span><!--" + timestamp + "!--><!--" + date.getSeconds() + "!-->";
         } else {
           var roleUsername = role + "</span></b><b> " + username;
           if (role == "") {
             roleUsername = role + "</span></b><b>" + username
           }
-          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + roleUsername + ":</b><span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span>";
+          html = "<img src='" + profilePicture + "' class='pfpImage'><b><span class='f109283hr" + username + "' style='color:" + roleColor + "'>" + roleUsername + ":</b><span class='timestamp'>" + timestamp + "</span></span> <br><span style='color: #cccccc;margin-left: 35px;'>" + inputVal + "</span><!--" + date.getSeconds() + "!-->";
         }
         if (inputVal != "") {
           sendMessage(markdown(html));
@@ -842,9 +895,9 @@
         var pfp = document.getElementById("pfpInput").value;
         database.ref("users/" + username + "/profilePicture").set(pfp);
         document.getElementById("pfpInput").value = "";
-        document.getElementById("pfpMessage").innerHTML = "Completed!";
-								clearInfoMsg(document.getElementById("pfpMessage"));
-				profilePicture = pfp;
+        popup("Completed!", 2000)
+        clearInfoMsg(document.getElementById("pfpMessage"));
+        profilePicture = pfp;
 
       }
 
@@ -852,28 +905,28 @@
         var pwd = document.getElementById("pwdInput").value;
         database.ref("users/" + username + "/password").set(pwd);
         document.getElementById("pwdInput").value = "";
-        document.getElementById("pwdMessage").innerHTML = "Completed!";
-								clearInfoMsg(document.getElementById("pwdMessage"));
+        popup("Completed!", 2000)
+        clearInfoMsg(document.getElementById("pwdMessage"));
 
       }
 
       function inviteUser() {
-          var user = document.getElementById("inviteInput").value;
-					if (users.includes(user)) {
-					if (viewedUsers.includes(user)) {
-					document.getElementById("inviteMessage").innerHTML = user + " is already in this chat!";
+        var user = document.getElementById("inviteInput").value;
+        if (users.includes(user)) {
+          if (viewedUsers.includes(user)) {
+            popup(user + " is already in this chat!", 2000)
+            document.getElementById("inviteInput").value = "";
+          } else {
+            viewedUsers.push(user);
+            database.ref("chats/" + viewedChat + "/users").set(viewedUsers);
+            document.getElementById("inviteInput").value = "";
+            popup(user + " has been invited to " + viewedChat, 2000)
+          }
+        } else {
+          popup(user + " doesn't exist.", 2000)
           document.getElementById("inviteInput").value = "";
-					} else {
-          viewedUsers.push(user);
-          database.ref("chats/" + viewedChat + "/users").set(viewedUsers);
-          document.getElementById("inviteInput").value = "";
-          document.getElementById("inviteMessage").innerHTML = user + " has been invited to " + viewedChat + "!";
-					}
-					} else {
-					document.getElementById("inviteMessage").innerHTML = user + " doesn't exist.";
-          document.getElementById("inviteInput").value = "";
-					}
-									clearInfoMsg(document.getElementById("inviteMessage"));
+        }
+        clearInfoMsg(document.getElementById("inviteMessage"));
       }
 
       function gcPfp() {
@@ -885,18 +938,17 @@
 					var oldData 
 					 database.ref("chats/" + viewedChat).set(name);*/
           document.getElementById("gcPfp2Input").value = "";
-          document.getElementById("gcPfpMessage").innerHTML = 'The info of the group chat has been changed!';
+          popup("The group chat picture has been changed!", 2000)
         } else {
-          document.getElementById("gcPfpMessage").innerHTML = "You must select a group chat first!";
+
         }
-								clearInfoMsg(document.getElementById("gcPfpMessage"));
+        clearInfoMsg(document.getElementById("gcPfpMessage"));
       }
 
       function checkMessages() {
         database.ref('messages/' + viewedChat + "/messages").get().then((data) => {
           viewedMessages = data.val();
           showMessages(viewedMessages);
-          document.getElementById("messages").innerHTML += '<div class="spacer" id="bottomSpacer"></div>';
         });
       }
 
@@ -947,9 +999,9 @@
             lastMessage = data.val();
             viewedMessages.push(data.val());
             document.getElementById("messages").innerHTML += "<div class='message'>" + data.val() + "</div>";
-            scrollToBottom();
             document.getElementById("bottomSpacer").remove();
-            document.getElementById("messages").innerHTML += "<div id='bottomSpacer'></div>";
+            messages.innerHTML += "<div id='bottomSpacer'></div>";
+            setTimeout(scrollToBottom, 1000);
           }
         });
       }
